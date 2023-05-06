@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" type="text/css" href="style.css">
+	<title>Etch-A-Sketch</title>
+    <style>
+    * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    min-height: 100vh;
+    height: 100vh;
+    background-color: red;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 2%;
+}
+
+header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+h1 {
+    color: white;
+}
+
+.grid-dimensions {
+    color: white;
+}
+
+.button-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5%;
+}
+
+.clear-button, .reset-button {
+    border: 2px solid black;
+    padding: 0.5rem 0.5rem;
+    border-radius: 5px;
+    background: white;
+}
+
+.clear-button:hover, .reset-button:hover {
+    background-color: lightgray;
+}
+
+.grid-container {
+    display: grid;
+    height: 70%;
+    width: 70%;
+    justify-content: center;
+    border: 2px solid black;
+    border-radius: 10px;
+    background-color: white;
+}
+</style>
+</head>
+<body>
+	<header>
+		<h1>Etch-A-Sketch</h1>
+		<div class="grid-dimensions"></div>
+		<div class="button-container">
+			<button class="clear-button">Clear</button>
+			<button class="reset-button">Reset</button>
+		</div>
+	</header>
+	<div class="grid-container">
+	</div>
+	<script>
+    (function(document, window, undefined){
+
+    "use strict"
+
+    function createGrid(number) {
+        const gridContainer = document.querySelector(".grid-container");
+        gridContainer.style.gridTemplateColumns = `repeat(${number}, 1fr)`;
+        gridContainer.style.gridTemplateRows = `repeat(${number}, 1fr)`;
+        for (let i = 1; i <= number*number; i++) {
+            let div = document.createElement("div");
+            div.classList.add("grid-box")
+            gridContainer.appendChild(div);
+        }
+        document.querySelector(".grid-dimensions").textContent = `${number}x${number}`;
+    }
+
+    function changeColor(event){
+        event.target.style.backgroundColor = "black";
+    }
+
+    function resetGrid(){
+        let num = prompt("Please enter grid size less than or equal to 100:");
+        if (num === undefined || num === null || num === "") {
+            return;
+        }
+
+        while (num > 100){
+            num = prompt("Number too big! Please enter grid size less than or equal to 100:");
+        }
+
+        const gridContainer = document.querySelector(".grid-container");
+        while (gridContainer.hasChildNodes()) {
+            gridContainer.removeChild(gridContainer.firstChild);
+        }
+        createGrid(num);
+        let gridBoxList = document.querySelectorAll(".grid-box");
+        gridBoxList.forEach(gridBox => {gridBox.addEventListener("mouseover", changeColor)});
+    }
+
+    function clearGrid(){
+        let gridBoxList = document.querySelectorAll(".grid-box");
+        gridBoxList.forEach(gridBox => {gridBox.style.backgroundColor = null});
+    }
+
+    let gridNumber = 16;
+    createGrid(gridNumber);
+    let gridBoxList = document.querySelectorAll(".grid-box");
+    gridBoxList.forEach(gridBox => {gridBox.addEventListener("mouseover", changeColor)});
+
+    const clearButton = document.querySelector(".clear-button");
+    const resetButton = document.querySelector(".reset-button");
+
+    clearButton.addEventListener("click", clearGrid);
+    resetButton.addEventListener("click", resetGrid);
+})(document, window) 
